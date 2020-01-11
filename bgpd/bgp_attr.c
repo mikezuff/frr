@@ -3864,23 +3864,22 @@ void bgp_dump_routes_attr(struct stream *s, struct attr *attr,
 	}
 
 	/* Extended Community attribute. */
-	if (attr->extra
-	    && attr->flag & ATTR_FLAG_BIT(BGP_ATTR_EXT_COMMUNITIES)) {
-		if (ecom_length(attr->extra->ecommunity) > 255) {
+	if (attr->flag & ATTR_FLAG_BIT(BGP_ATTR_EXT_COMMUNITIES)) {
+		if (ecom_length(attr->ecommunity) > 255) {
 			stream_putc(s, BGP_ATTR_FLAG_OPTIONAL
 					       | BGP_ATTR_FLAG_TRANS
 					       | BGP_ATTR_FLAG_EXTLEN);
 			stream_putc(s, BGP_ATTR_EXT_COMMUNITIES);
-			stream_putw(s, ecom_length(attr->extra->ecommunity));
+			stream_putw(s, ecom_length(attr->ecommunity));
 		} else {
 			stream_putc(s, BGP_ATTR_FLAG_OPTIONAL
 					       | BGP_ATTR_FLAG_TRANS);
 			stream_putc(s, BGP_ATTR_EXT_COMMUNITIES);
-			stream_putw(s, ecom_length(attr->extra->ecommunity));
+			stream_putw(s, ecom_length(attr->ecommunity));
 		}
 
-		stream_put(s, attr->extra->ecommunity->val,
-			   ecom_length(attr->extra->ecommunity));
+		stream_put(s, attr->ecommunity->val,
+			   ecom_length(attr->ecommunity));
 	}
 
 	/* Add a MP_NLRI attribute to dump the IPv6 next hop */
